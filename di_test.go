@@ -62,3 +62,48 @@ func TestGet(t *testing.T) {
 	_, err = Get[struct{}](c)
 	assert.ErrorIs(t, err, ErrNoInterface)
 }
+
+func TestCrossDependency(t *testing.T) {
+	type (
+		S1 interface{}
+		S2 interface{}
+
+		S1Impl struct {
+			S S2
+		}
+		S2Impl struct {
+			S S1
+		}
+	)
+
+	c := NewContainer()
+
+	assert.Nil(t, Register[S1](c, S1Impl{}))
+	assert.Nil(t, Register[S2](c, S2Impl{}))
+
+	s2, err := Get[S2](c)
+	assert.Nil(t, err)
+
+	s2i := s2.(*S2Impl)
+	assert.NotNil(t, s2i.S)
+
+	s1i := s2i.S.(*S1Impl)
+	assert.NotNil(t, s1i.S)
+}
+
+func TestNoInterface(t *testing.T) {
+	type (
+		S1 interface{}
+
+		S1Impl struct {
+			S struct{}
+		}
+	)
+
+	c := NewContainer()
+
+	assert.Nil(t, Register[S1](c, S1Impl{}))
+	_, err := Get[S1](c)
+	assert.Nil(t, err)
+
+}

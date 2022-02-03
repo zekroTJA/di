@@ -16,6 +16,8 @@ func (s *Service) Build(c Container) (instance reflect.Value) {
 		return
 	}
 	instance = reflect.New(s.ImplType)
+	s.Instance = instance
+	s.IsBuilt = true
 	elem := instance.Elem()
 	for i := 0; i < elem.NumField(); i++ {
 		tF := elem.Field(i)
@@ -27,10 +29,10 @@ func (s *Service) Build(c Container) (instance reflect.Value) {
 		if !ok {
 			continue
 		}
-		fInstance := svc.Build(c)
-		tF.Set(fInstance)
+		if tF.IsNil() {
+			fInstance := svc.Build(c)
+			tF.Set(fInstance)
+		}
 	}
-	s.Instance = instance
-	s.IsBuilt = true
 	return
 }
