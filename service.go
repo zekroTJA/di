@@ -1,36 +1,33 @@
 package di
 
-import (
-	"reflect"
-)
+import "reflect"
 
 type Service struct {
-	ImplType reflect.Type
-	IsBuilt  bool
-	Instance reflect.Value
+	definition reflect.Type
+	impl       reflect.Type
+
+	value *reflect.Value
+
+	dependencies []*Service
+
+	setup    func(c *Container) (any, error)
+	teardown func(c *Container) error
 }
 
-func (s *Service) Build(c Container) (instance reflect.Value) {
-	if s.IsBuilt {
-		instance = s.Instance
-		return
+func (t *Service) Teardown(c *Container) error {
+	if t.teardown != nil {
+		return t.teardown(c)
 	}
-	instance = reflect.New(s.ImplType)
-	elem := instance.Elem()
-	for i := 0; i < elem.NumField(); i++ {
-		tF := elem.Field(i)
-		if tF.Kind() != reflect.Interface {
-			continue
+
+	if t.value != nil {
+		if td, ok := t.value.Interface().(Teardown); ok {
+			return td.Teardown()
 		}
-		key := getInterfaceKey(tF.Type())
-		svc, ok := c.Get(key)
-		if !ok {
-			continue
-		}
-		fInstance := svc.Build(c)
-		tF.Set(fInstance)
 	}
-	s.Instance = instance
-	s.IsBuilt = true
-	return
+
+	return nil
+}
+
+type Teardown interface {
+	Teardown() error
 }
