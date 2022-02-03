@@ -12,3 +12,9 @@ func getType[T any]() reflect.Type {
 func getInterfaceKey(t reflect.Type) string {
 	return fmt.Sprintf("%s.%s", t.PkgPath(), t.Name())
 }
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
