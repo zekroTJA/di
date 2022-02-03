@@ -9,7 +9,7 @@ import (
 
 func TestBuild(t *testing.T) {
 	c := NewContainer()
-	Register[a](c, struct{}{})
+	Register[a, struct{}](c)
 
 	s := &Service{
 		ImplType: reflect.TypeOf(testImpl{}),

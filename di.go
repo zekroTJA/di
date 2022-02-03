@@ -4,12 +4,9 @@ import (
 	"reflect"
 )
 
-func Register[T any](
-	c Container,
-	impl T,
-) (err error) {
-	tImpl := reflect.TypeOf(impl)
-	tIf := getInterfaceType[T]()
+func Register[TSvc, TImpl any](c Container) (err error) {
+	tImpl := getType[TImpl]()
+	tIf := getType[TSvc]()
 	if tIf.Kind() != reflect.Interface {
 		err = ErrNoInterface
 		return
@@ -26,7 +23,7 @@ func Register[T any](
 }
 
 func Get[T any](c Container) (s T, err error) {
-	tIf := getInterfaceType[T]()
+	tIf := getType[T]()
 	if tIf.Kind() != reflect.Interface {
 		err = ErrNoInterface
 		return

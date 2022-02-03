@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func getInterfaceType[T any]() reflect.Type {
+func getType[T any]() reflect.Type {
 	return reflect.TypeOf((*T)(nil)).Elem()
 }
 

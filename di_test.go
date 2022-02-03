@@ -18,13 +18,13 @@ func TestRegister(t *testing.T) {
 
 	// Infers testImpl as type instead
 	// of an interface.
-	err := Register(c, testImpl{})
+	err := Register[testImpl, testImpl](c)
 	assert.ErrorIs(t, err, ErrNoInterface)
 
 	type myInterface interface{}
 	const key = "github.com/zekrotja/di.myInterface"
 
-	err = Register[myInterface](c, testImpl{})
+	err = Register[myInterface, testImpl](c)
 	assert.Nil(t, err)
 
 	v, ok := c.(*containerImpl).m.Load(key)
@@ -43,7 +43,7 @@ func TestGet(t *testing.T) {
 	type myOtherInterface interface{}
 
 	impl := testImpl{}
-	Register[myInterface](c, impl)
+	Register[myInterface, testImpl](c)
 
 	s, err := Get[myInterface](c)
 	assert.Nil(t, err)
@@ -78,8 +78,8 @@ func TestCrossDependency(t *testing.T) {
 
 	c := NewContainer()
 
-	assert.Nil(t, Register[S1](c, S1Impl{}))
-	assert.Nil(t, Register[S2](c, S2Impl{}))
+	assert.Nil(t, Register[S1, S1Impl](c))
+	assert.Nil(t, Register[S2, S2Impl](c))
 
 	s2, err := Get[S2](c)
 	assert.Nil(t, err)
@@ -103,7 +103,7 @@ func TestNoInterface(t *testing.T) {
 
 	c := NewContainer()
 
-	assert.Nil(t, Register[S1](c, S1Impl{}))
+	assert.Nil(t, Register[S1, S1Impl](c))
 	_, err := Get[S1](c)
 	assert.Nil(t, err)
 
