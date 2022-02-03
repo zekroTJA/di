@@ -11,7 +11,7 @@ func Register[TSvc, TImpl any](c Container) (err error) {
 		err = ErrNoInterface
 		return
 	}
-	if !tImpl.Implements(tIf) {
+	if !tImpl.Implements(tIf) && !reflect.PointerTo(tImpl).Implements(tIf) {
 		err = ErrDoesNotImplInterface
 		return
 	}
