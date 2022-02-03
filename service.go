@@ -29,7 +29,7 @@ func (s *Service) Build(c Container) (instance reflect.Value) {
 		if !ok {
 			continue
 		}
-		if tF.IsNil() {
+		if tF.CanSet() && tF.IsNil() {
 			fInstance := svc.Build(c)
 			tF.Set(fInstance)
 		}

@@ -97,6 +97,7 @@ func TestNoInterface(t *testing.T) {
 
 		S1Impl struct {
 			S struct{}
+			s S1
 		}
 	)
 
