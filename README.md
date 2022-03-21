@@ -43,7 +43,7 @@ Here, you can see some implementation ideas which will be implemented in the upc
 - [ ] Register dependencies directly via instance
 - [ ] Register dependencies via builder functions
 - [ ] Add disposal functions which will be called when the container is getting disposed.
-- [ ] Add [transistent](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection#transient) service registration.
+- [ ] Add [transient](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection#transient) service registration.
 
 ## Goal
 
