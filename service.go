@@ -4,13 +4,21 @@ import (
 	"reflect"
 )
 
-type Service struct {
+// Service describes what type of object should get constructed
+// and how should it get returned.
+type Service interface {
+	Build(c Container) (instance reflect.Value)
+}
+
+// singletonService describes a dependency that should only be constructed once
+// and reused for the lifetime of the application.
+type singletonService struct {
 	ImplType reflect.Type
 	IsBuilt  bool
 	Instance reflect.Value
 }
 
-func (s *Service) Build(c Container) (instance reflect.Value) {
+func (s *singletonService) Build(c Container) (instance reflect.Value) {
 	if s.IsBuilt {
 		instance = s.Instance
 		return

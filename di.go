@@ -16,7 +16,7 @@ func Register[TSvc, TImpl any](c Container) (err error) {
 		return
 	}
 	key := getInterfaceKey(tIf)
-	c.Put(key, &Service{
+	c.Put(key, &singletonService{
 		ImplType: tImpl,
 	})
 	return

@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBuild(t *testing.T) {
+func TestBuildSingleton(t *testing.T) {
 	c := NewContainer()
 	Register[a, struct{}](c)
 
-	s := &Service{
+	s := &singletonService{
 		ImplType: reflect.TypeOf(testImpl{}),
 		IsBuilt:  false,
 	}
