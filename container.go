@@ -5,8 +5,8 @@ import (
 )
 
 type Container interface {
-	Put(key string, service *Service)
-	Get(key string) (*Service, bool)
+	Put(key string, service Service)
+	Get(key string) (Service, bool)
 }
 
 type containerImpl struct {
@@ -17,15 +17,15 @@ func NewContainer() Container {
 	return &containerImpl{}
 }
 
-func (c *containerImpl) Put(key string, service *Service) {
+func (c *containerImpl) Put(key string, service Service) {
 	c.m.Store(key, service)
 }
 
-func (c *containerImpl) Get(key string) (s *Service, ok bool) {
+func (c *containerImpl) Get(key string) (s Service, ok bool) {
 	v, ok := c.m.Load(key)
 	if !ok {
 		return
 	}
-	s, ok = v.(*Service)
+	s, ok = v.(Service)
 	return
 }
