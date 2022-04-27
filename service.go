@@ -26,6 +26,25 @@ func (s *singletonService) Build(c Container) (instance reflect.Value) {
 	instance = reflect.New(s.ImplType)
 	s.Instance = instance
 	s.IsBuilt = true
+	injectFields(instance, c)
+	return
+}
+
+// transientService describes a dependency that should get created anew
+// each time it is requested from the container.
+type transientService struct {
+	implType reflect.Type
+}
+
+func (s *transientService) Build(c Container) (instance reflect.Value) {
+	instance = reflect.New(s.implType)
+	injectFields(instance, c)
+	return
+}
+
+// injectFields attempts to inject dependencies into a given value,
+// using a provided DI container.
+func injectFields(instance reflect.Value, c Container) {
 	elem := instance.Elem()
 	for i := 0; i < elem.NumField(); i++ {
 		tF := elem.Field(i)
@@ -42,5 +61,4 @@ func (s *singletonService) Build(c Container) (instance reflect.Value) {
 			tF.Set(fInstance)
 		}
 	}
-	return
 }
