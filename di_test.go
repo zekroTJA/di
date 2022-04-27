@@ -63,6 +63,41 @@ func TestGet(t *testing.T) {
 	assert.ErrorIs(t, err, ErrNoInterface)
 }
 
+func TestTransientGetsDifferent(t *testing.T) {
+
+	type aImpl struct{}
+	type testInterface interface{}
+
+	c := NewContainer()
+	Register[a, aImpl](c)
+	RegisterTransient[testInterface, testImpl](c)
+
+	// The transient service should get created
+	s1, err := Get[testInterface](c)
+	assert.Nil(t, err)
+	assert.IsType(t, &testImpl{}, s1)
+
+	// The singleton dependency should be injected
+	assert.NotNil(t, s1.(*testImpl).A)
+
+	// The transient service should get created,
+	s2, err := Get[testInterface](c)
+	assert.Nil(t, err)
+	assert.IsType(t, &testImpl{}, s2)
+
+	// but it should be different from the previous one
+	assert.NotSame(t, s2, s1)
+
+	// The dependency is singleton though
+	assert.Same(t, s1.(*testImpl).A, s2.(*testImpl).A)
+}
+
+func TestTransientChecksTypes(t *testing.T) {
+	err := RegisterTransient[testImpl, testImpl](NewContainer())
+	assert.NotNil(t, err)
+	assert.ErrorIs(t, err, ErrNoInterface)
+}
+
 func TestCrossDependency(t *testing.T) {
 	type (
 		S1 interface{}
