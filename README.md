@@ -6,8 +6,8 @@ The implementation is using a multitree DAG to allow multiple references of same
 
 Primarily, this package is designed to replace the currently used dependency injection container [sarulabs/di](https://github.com/sarulabs/di) in my Discord bot project [shinpuru](https://github.com/zekroTJA/shinpuru).
 
-> **Warning**
-> The state of the package is in a very early experimental state and the API might experience breaking changes in future updates.
+> **Warning**  
+> The state of the package is in a very early experimental stage and the API might experience breaking changes in future updates.
 
 ## Example
 
@@ -38,10 +38,10 @@ func main() {
     MustRegister[WebServer, WebServerImpl](c)
     MustRegister[Database, MySql](c)
     MustRegister[Config, EnvConfig](c, RegisterOptions[EnvConfig]{
-		Setup: func(c *Container) (*EnvConfig, error) {
-			return readFromEnv("MYAPP_"), nil
-		},
-	})
+        Setup: func(c *Container) (*EnvConfig, error) {
+            return readFromEnv("MYAPP_"), nil
+        },
+    })
 
     ws := MustGet[WebServer](c)
     ws.Run()
